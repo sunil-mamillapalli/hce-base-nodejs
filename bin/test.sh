@@ -3,4 +3,7 @@
 set -e
 
 source_dir="${1:?Source directory is required first arg}"
-(cd "$PWD/$source_dir" && /src/node/bin/npm test)
+output_dir="${2:?Output directory is required second arg}"
+
+(cd "$PWD/$source_dir" && npm test > test_log.txt)
+cp -pr "$PWD/$source_dir/." "$PWD/$output_dir"
