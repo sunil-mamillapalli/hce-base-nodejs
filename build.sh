@@ -1,5 +1,5 @@
 #!/bin/bash
 
 set -e
-docker build -t helionce/hce-base-nodejs  .
-docker push helionce/hce-base-nodejs:latest
+docker build -t helioncf/hce-concourse-wokers:hce-base-nodejs  .
+docker push helioncf/hce-concourse-wokers:hce-base-nodejs
