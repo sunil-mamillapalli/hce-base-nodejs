@@ -1,5 +1,6 @@
 FROM node:4.3.0-slim
-RUN apt-get update
-RUN apt-get install -y build-essential python
+RUN apt-get update && \
+   apt-get install -y build-essential python git && \
+   apt-get clean
 
-COPY bin/* /src/scripts/
+COPY bin/* /src/bin/
