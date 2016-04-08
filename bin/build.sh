@@ -12,6 +12,6 @@ echo "Pruning git history"
 rm -rf $PWD/$source_dir/.git
 
 (date -u +"%Y-%m-%dT%H:%M:%SZ" > "$PWD/$output_dir/starttime")
-(cd "$PWD/$source_dir" && npm install --unsafe-perm )
-cp -pr "$PWD/$source_dir/." "$PWD/$output_dir"
+(cd "$PWD/$source_dir" && npm install --unsafe-perm );
+(cp -pr "$PWD/$source_dir/" "$PWD/$output_dir/app");
 (date -u +"%Y-%m-%dT%H:%M:%SZ" > "$PWD/$output_dir/endtime")
