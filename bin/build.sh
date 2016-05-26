@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -e
 
@@ -7,6 +7,8 @@ output_dir="${2:?Output directory is required second arg}"
 
 echo $source_dir
 echo $output_dir
+
+echo "node version is : $(node --version)"
 
 echo "Pruning git history"
 rm -rf $source_dir/.git
