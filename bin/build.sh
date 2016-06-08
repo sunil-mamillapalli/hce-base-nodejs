@@ -1,19 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -e
+set -x
 
-source_dir="${1:?Source directory is required first arg}"
-output_dir="${2:?Output directory is required second arg}"
+source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/build.sh"
 
-echo $source_dir
-echo $output_dir
+action:build() {
+  locale-gen en_US.UTF-8
+  
+  "$HCE_BUILDPACK_LOCATION/bin/compile" \
+    "$source_dir" \
+    "$HCE_BUILDPACK_TEMP_DIR"
+  rm -fr "$HCE_BUILDPACK_TEMP_DIR"
+}
 
-echo "node version is : $(node --version)"
-
-echo "Pruning git history"
-rm -rf $source_dir/.git
-
-(date -u +"%Y-%m-%dT%H:%M:%SZ" > "$output_dir/starttime")
-(cd "$source_dir" && npm install --unsafe-perm );
-(cp -pr "$source_dir/" "$output_dir/app");
-(date -u +"%Y-%m-%dT%H:%M:%SZ" > "$output_dir/endtime")
+main "$@"

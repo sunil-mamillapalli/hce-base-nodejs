@@ -1,9 +1,19 @@
-FROM progrium/busybox
-RUN opkg-install curl tar node &&\
-    curl --insecure https://nodejs.org/dist/v5.9.1/node-v5.9.1-linux-x64.tar.gz  | gunzip | tar -xf - -C / && \
-    mv /node-v5.9.1-linux-x64/bin/node /usr/bin/node && \
-    opkg-cl remove curl  --autoremove && \
-    rm -rf /node-v5.9.1-linux-x64 \
-    opkg-install make git python
+FROM ubuntu:14.04
 
-COPY bin/* /src/bin/
+RUN \
+    apt-get update \
+&& \
+    apt-get install -y \
+        curl \
+        git \
+        python \
+        ruby \
+        vim \
+&& \
+    mkdir -p \
+        /app/.heroku
+
+COPY bin /src/bin
+COPY buildpack /src/buildpack
+COPY lib /src/lib
+ENV CF_STACK=cflinuxfs2

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -e
+
+root="$(cd $(dirname $BASH_SOURCE); pwd)"
+
+main() {
+  [[ ! -e .makefile ]] || return 0
+
+  config="${1:?$0 needs a config file argument}"
+  source "$config"
+
+  render makefile-head > .makefile
+  write makefile >> .makefile
+
+  link gitignore .gitignore
+
+  copy make-test.sh bin/make-test.sh
+  chmod +x bin/make-test.sh
+
+  mkdir -p lib
+  copy base.bash lib/base.bash
+  copy log.bash lib/log.bash
+  copy build.sh lib/build.sh
+  copy test.sh lib/test.sh
+
+  mkdir -p concourse
+  copy concourse-run.sh concourse/run.sh
+  render concourse-pipeline.yml > concourse/pipeline.yml
+
+  echo "*** $0 - Update complete ***" >&2
+  echo '' >&2
+}
+
+render() {
+  template="$root/template/$1"
+  eval "cat <<...
+$(< $template)
+...
+"
+}
+
+write() {
+  template="$root/template/$1"
+  cat "$template"
+}
+
+link() {
+  template="$1"
+  link="$2"
+  ln -fs "$root/template/$template" "$link"
+}
+
+copy() {
+  template="$1"
+  target="$2"
+  cp -p "$root/template/$template" "$target"
+}
+
+[[ $0 != "$BASH_SOURCE" ]] || main "$@"

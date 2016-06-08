@@ -1,0 +1,56 @@
+groups: []
+resources:
+- name: base-repo
+  type: git
+  source:
+    uri: https://github.com/${test_app}
+    branch: master
+jobs:
+- name: start-job-in-pipeline
+  public: true
+  serial: true
+  plan:
+  - get: base-repo
+  - task: Building
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          email: {{DOCKER_EMAIL}}
+          password: {{DOCKER_PASSWORD}}
+          repository: helioncf/${docker_hub_name}
+          tag: kosher-prod
+          username: {{DOCKER_USERNAME}}
+      run:
+        path: sh
+        args:
+        - -c
+        - /src/bin/build.sh src/app src/out/build
+      inputs:
+      - name: src/app
+        path: ''
+      outputs:
+      - name: src/out/build
+        path: ''
+  - task: Testing
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          email: {{DOCKER_EMAIL}}
+          password: {{DOCKER_PASSWORD}}
+          repository: helioncf/hce-concourse-workers
+          tag: ${docker_hub_name}
+          username: {{DOCKER_USERNAME}}
+      run:
+        path: sh
+        args:
+        - -c
+        - cat /src/bin/test.sh;
+          /src/bin/test.sh src/out/build src/out/test
+      inputs:
+      - name: src/out/build
+      outputs:
+      - name: src/out/test
