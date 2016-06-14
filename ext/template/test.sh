@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -o pipefail
 
 source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/log.bash" TEST
 

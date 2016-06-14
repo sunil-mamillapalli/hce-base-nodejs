@@ -1,6 +1,7 @@
 #! bash
 
 set -e
+set -o pipefail
 
 : "${HCE_BUILDPACK_LOCATION:=/src/buildpack}"
 : "${HCE_BUILDPACK_TEMP_DIR:=/tmp/heroku-build-temp-$$}"
