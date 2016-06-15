@@ -11,13 +11,16 @@ main() {
 
   log:start
 
+  local rc=0
   (
     set -x
     cd "$source_dir/app/"
-    action:test
-  ) 2>&1 | log:output
+    action:test || exit
+  ) 2>&1 | log:output || rc=$?
 
   log:end
+
+  return $rc
 }
 
 action:test() {

@@ -23,13 +23,16 @@ main() {
 
   log 'Compile buildpack'
 
+  local rc=0
   (
     set -x
-    action:build
+    action:build || exit
     cp -pr "$source_dir" "$output_dir/app"
-  ) 2>&1 | log:output
+  ) 2>&1 | log:output || rc=$?
 
   log:end
+
+  return $rc
 }
 
 action:build() {
