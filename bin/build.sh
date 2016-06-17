@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
-
-source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/build.sh"
+source "$(dirname $BASH_SOURCE)/../lib/build.sh"
 
 action:build() {
   locale-gen en_US.UTF-8

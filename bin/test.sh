@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/test.sh"
+source "$(dirname $BASH_SOURCE)/../lib/test.sh"
 
 action:test() {
   $source_dir/app/.heroku/node/bin/npm install
