@@ -6,6 +6,6 @@
 [subrepo]
 	remote = git@github.com:hpcloud/hce-base-template
 	branch = master
-	commit = c05018881d8352f59678c1f63606daacc1b1f074
-	parent = fa3f133cf8bc837b7687fd75c9780405c35461cd
+	commit = 5e56dec942391d37ce81ddfb8eeaabdd4394d264
+	parent = d3f32d5d3fa579a8ce115826b7673157444b5937
 	cmdver = 0.3.0

@@ -1,34 +1,30 @@
 #! bash
 
-set -e
-set -o pipefail
+set -eu -o pipefail
 
-: "${HCE_BUILDPACK_LOCATION:=/src/buildpack}"
-: "${HCE_BUILDPACK_TEMP_DIR:=/tmp/heroku-build-temp-$$}"
-export STACK=cedar-14
-
-source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/base.bash" BUILD
+source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/base.bash"
 source "$(cd $(dirname $BASH_SOURCE)/..; pwd)/lib/log.bash" BUILD
 
 main() {
-  local source_dir="${1:?Source directory is required first arg}"
-  local output_dir="${2:?Output directory is required second arg}"
+  local source_dir="${1:?App source directory is required first arg}"
+  local output_dir="${2:?Build output directory is required second arg}"
 
   [[ $source_dir =~ ^/ ]] ||
-    die "Source dir '$source_dir' must be absolute path."
+    die "App source dir '$source_dir' must be absolute path."
   [[ $output_dir =~ ^/ ]] ||
-    die "Output dir '$output_dir' must be absolute path."
+    die "Build output dir '$output_dir' must be absolute path."
 
   log:start
 
   log 'Compile buildpack'
 
-  local rc=0
+  local rc=0; set +e
   (
-    set -x
-    action:build || exit
+    set -ex
+    action:build
     cp -pr "$source_dir" "$output_dir/app"
-  ) 2>&1 | log:output || rc=$?
+  ) 2>&1 | log:output
+  rc=$?; set -e
 
   log:end
 
@@ -38,3 +34,7 @@ main() {
 action:build() {
   die "Please define the function: 'action:build'"
 }
+
+: "${HCE_BUILDPACK_LOCATION:=/src/buildpack}"
+: "${HCE_BUILDPACK_TEMP_DIR:=/tmp/heroku-build-$$}"
+export STACK=cedar-14
