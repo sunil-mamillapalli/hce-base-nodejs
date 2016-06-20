@@ -3,12 +3,19 @@ ifndef $(DOCKER_HUB_USER)
 endif
 DOCKER_IMAGE_TAG := $(DOCKER_HUB_USER)/$(DOCKER_HUB_NAME)
 
+TEST_APP_BRANCH ?= master
 TEST_APP_URL := git@github.com:$(TEST_APP)
 TEST_APP_PATH := app
 
-TEST_INPUT_PATH := src/app
-TEST_OUTPUT_PATH := src/out
-TEST_COMMAND := /src/bin/make-test.sh \
+BUILD_INPUT_PATH := src/app
+BUILD_OUTPUT_PATH := src/build
+TEST_INPUT_PATH := src/build
+TEST_OUTPUT_PATH := src/test
+BUILD_COMMAND:= /src/bin/build.sh \
+    /$(BUILD_INPUT_PATH) \
+    /$(BUILD_OUTPUT_PATH)
+
+TEST_COMMAND := /src/bin/test.sh \
     /$(TEST_INPUT_PATH) \
     /$(TEST_OUTPUT_PATH)
 
@@ -16,8 +23,9 @@ DOCKER_RUN_COMMAND := \
     docker run -it \
     -v $(PWD)/bin:/src/bin \
     -v $(PWD)/lib:/src/lib \
-    -v $(PWD)/$(TEST_APP_PATH):/$(TEST_INPUT_PATH) \
-    -v $(PWD)/out:/$(TEST_OUTPUT_PATH) \
+    -v $(PWD)/$(TEST_APP_PATH):/$(BUILD_INPUT_PATH) \
+    -v $(PWD)/build:/$(BUILD_OUTPUT_PATH) \
+    -v $(PWD)/test:/$(TEST_OUTPUT_PATH) \
     $(DOCKER_IMAGE_TAG)
 
 .PHONY: test
@@ -38,7 +46,8 @@ build: buildpack
 	docker build -t $(DOCKER_IMAGE_TAG) .
 
 test: build $(TEST_APP_PATH)
-	mkdir -p out
+	mkdir -p $(BUILD_OUTPUT_PATH) $(TEST_OUTPUT_PATH)
+	$(DOCKER_RUN_COMMAND) $(BUILD_COMMAND)
 	$(DOCKER_RUN_COMMAND) $(TEST_COMMAND)
 
 push: build
@@ -49,10 +58,10 @@ shell: build
 
 clean:
 	rm -f .gitignore .makefile bin/make-test.sh
-	rm -fr app buildpack concourse lib out
+	rm -fr app build buildpack concourse lib out test
 
 buildpack:
 	git clone --recursive $(BUILDPACK_URL) $@
 
 $(TEST_APP_PATH):
-	git clone --recursive $(TEST_APP_URL) $@
+	git clone --depth 1 --branch $(TEST_APP_BRANCH) --recursive $(TEST_APP_URL) $@
