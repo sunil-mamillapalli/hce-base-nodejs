@@ -15,6 +15,13 @@ main() {
     die "Build output dir '$output_dir' must be absolute path."
 
   log:start
+  log 'Remove .git history folder'
+  local rc=0; set +e
+  (
+    set -ex
+    rm -rf "$source_dir/.git"
+  ) 2>&1 | log:output
+  rc=$?; set -e
 
   log 'Compile buildpack'
 
