@@ -1,3 +1,4 @@
 DOCKER_HUB_NAME := $docker_hub_name
 BUILDPACK_URL := $buildpack_url
+BUILDPACK_TAG := $buildpack_tag
 TEST_APP ?= $test_app

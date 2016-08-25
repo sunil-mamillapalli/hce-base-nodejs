@@ -46,7 +46,6 @@ build: buildpack
 	docker build -t $(DOCKER_IMAGE_TAG) .
 
 test: build $(TEST_APP_PATH)
-	mkdir -p $(BUILD_OUTPUT_PATH) $(TEST_OUTPUT_PATH)
 	$(DOCKER_RUN_COMMAND) $(BUILD_COMMAND)
 	$(DOCKER_RUN_COMMAND) $(TEST_COMMAND)
 
@@ -57,11 +56,11 @@ shell: build
 	$(DOCKER_RUN_COMMAND) bash
 
 clean:
-	rm -f .gitignore .makefile bin/make-test.sh
-	rm -fr app build buildpack concourse lib out test
+	git clean -dxf
+	rm -rf app build buildpack
 
 buildpack:
-	git clone --recursive $(BUILDPACK_URL) $@
+	git clone --depth=1 --recursive --branch=$(BUILDPACK_TAG) $(BUILDPACK_URL) $@
 
 $(TEST_APP_PATH):
-	git clone --depth 1 --branch $(TEST_APP_BRANCH) --recursive $(TEST_APP_URL) $@
+	git clone --depth=1 --recursive --branch=$(TEST_APP_BRANCH) $(TEST_APP_URL) $@
