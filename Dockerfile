@@ -17,3 +17,4 @@ COPY bin /src/bin
 COPY buildpack /src/buildpack
 COPY lib /src/lib
 ENV CF_STACK=cflinuxfs2
+ADD LICENSE.txt /usr/share/doc/stackato/LICENSE.txt
