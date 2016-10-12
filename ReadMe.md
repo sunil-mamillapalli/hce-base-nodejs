@@ -1,4 +1,4 @@
-## Helion Code Engine NodeJS build container
+## Helion Code Engine NodeJS Build container
 
 Uses the CloudFoundry NodeJS build pack to setup the environment for building
 and testing customer's NodeJS application.
